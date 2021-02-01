@@ -20,6 +20,27 @@ public class RegistryController {
 
     @GetMapping("{userId}/registry")
     public ResponseEntity<List<Registry>> getRegistries() {
+        Registry wallet = new Registry();
+        wallet.setAmount(1000);
+        wallet.setLabel("Wallet");
+
+        Registry savings = new Registry();
+        savings.setAmount(5000);
+        savings.setLabel("Savings");
+
+        Registry insurance = new Registry();
+        insurance.setAmount(0);
+        insurance.setLabel("Insurance policy");
+
+        Registry food = new Registry();
+        food.setAmount(0);
+        food.setLabel("Food expenses");
+
+        registryRepository.save(wallet);
+        registryRepository.save(savings);
+        registryRepository.save(insurance);
+        registryRepository.save(food);
+
         return ResponseEntity.ok(ImmutableList.copyOf(registryRepository.findAll()));
     }
 }
