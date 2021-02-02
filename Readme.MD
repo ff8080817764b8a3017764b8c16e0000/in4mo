@@ -1,5 +1,6 @@
 ####Build status:
 
+[![Codeship Status for arturk9/in4mo](https://app.codeship.com/projects/ae14e429-0134-4f33-bfc5-71d9045b4761/status?branch=master)](https://app.codeship.com/projects/425749)
 
 ####Tested on:
 - MacOS 11.1
