@@ -2,6 +2,7 @@ package com.in4mo.wallet.controller;
 
 import com.google.common.collect.ImmutableList;
 import com.in4mo.wallet.model.request.RechargeRequest;
+import com.in4mo.wallet.model.request.TransferRequest;
 import com.in4mo.wallet.model.response.RegistryResponse;
 import com.in4mo.wallet.service.RegistryService;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +31,14 @@ public class RegistryController {
                                    @PathVariable String registryId,
                                    @RequestBody @Valid RechargeRequest rechargeRequest) {
         registryService.recharge(userId, registryId, rechargeRequest);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("{userId}/registry/{registryId}/transfer")
+    public ResponseEntity transfer(@PathVariable String userId,
+                                   @PathVariable String registryId,
+                                   @RequestBody @Valid TransferRequest transferRequest) {
+        registryService.transfer(userId, registryId, transferRequest);
         return ResponseEntity.ok().build();
     }
 }
