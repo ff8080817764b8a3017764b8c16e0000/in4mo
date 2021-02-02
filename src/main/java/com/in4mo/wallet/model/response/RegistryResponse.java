@@ -5,6 +5,7 @@ import lombok.Data;
 
 @Data
 public class RegistryResponse {
+
     private String id;
     private String label;
     private int amount;

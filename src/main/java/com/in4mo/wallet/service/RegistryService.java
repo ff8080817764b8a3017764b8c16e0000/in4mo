@@ -58,11 +58,13 @@ public class RegistryService {
         }
 
         if (Objects.isNull(targetRegistry)) {
-            throw new RegistryNotFoundException(String.format("Target registry '%s' not found for user: '%s'", transferRequest.getTargetRegistryId(), userId));
+            throw new RegistryNotFoundException(String.format("Target registry '%s' not found for user: '%s'",
+                    transferRequest.getTargetRegistryId(), userId));
         }
 
         if (sourceRegistry.getAmount() < transferRequest.getAmount()) {
-            throw new InvalidRequestException(String.format("Not enough funds for the transfer. Source amount: %s, requested transfer: %s", sourceRegistry.getAmount(), transferRequest.getAmount()));
+            throw new InvalidRequestException(String.format("Not enough funds for the transfer. Source amount: %s, requested transfer: %s",
+                    sourceRegistry.getAmount(), transferRequest.getAmount()));
         }
 
         sourceRegistry.setAmount(sourceRegistry.getAmount() - transferRequest.getAmount());

@@ -19,6 +19,8 @@ import java.util.List;
 @RestControllerAdvice
 public class RegistryControllerExceptionHandler {
 
+    private final static String MESSAGE_DELIMITER = ", ";
+
     @ExceptionHandler(RegistryNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<ErrorResponse> handle(RegistryNotFoundException exception, WebRequest request) {
@@ -39,7 +41,7 @@ public class RegistryControllerExceptionHandler {
             errorMessages.add(error.getDefaultMessage());
         }
 
-        String message = String.join(", ", errorMessages);
+        String message = String.join(MESSAGE_DELIMITER, errorMessages);
 
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)

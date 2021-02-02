@@ -7,6 +7,7 @@ import org.springframework.web.context.request.WebRequest;
 
 @Data
 public class ErrorResponse {
+
     private String error;
     private String message;
     private int status;

@@ -8,6 +8,8 @@ import java.util.List;
 
 @Component
 public interface RegistryRepository extends CrudRepository<Registry, String> {
+
     List<Registry> findByUserId(String userId);
     Registry findByIdAndUserId(String id, String userId);
+
 }

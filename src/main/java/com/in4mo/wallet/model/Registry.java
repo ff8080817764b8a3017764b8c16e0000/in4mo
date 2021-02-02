@@ -12,6 +12,7 @@ import javax.persistence.Id;
 @Entity
 @NoArgsConstructor
 public class Registry {
+
     @Id
     @GeneratedValue(generator="system-uuid")
     @GenericGenerator(name="system-uuid", strategy = "uuid")
