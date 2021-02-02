@@ -24,11 +24,17 @@ public class RegistryService {
     }
 
     public List<RegistryResponse> findByUserId(String userId) {
-        return registryRepository
+        List<RegistryResponse> registryResponse = registryRepository
                 .findByUserId(userId)
                 .stream()
                 .map(RegistryResponse::new)
                 .collect(Collectors.toUnmodifiableList());
+
+        if (registryResponse.isEmpty()) {
+            throw new RegistryNotFoundException(String.format("No registries found for userId: '%s'", userId));
+        }
+
+        return registryResponse;
     }
 
     @Transactional

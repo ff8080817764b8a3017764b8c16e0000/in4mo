@@ -51,13 +51,13 @@ public class AcceptanceTests {
                 .andExpect(jsonPath("$[0].amount", is(1000)))
                 .andExpect(jsonPath("$[1].label", is("Savings")))
                 .andExpect(jsonPath("$[1].id", is(savings.getId())))
-                .andExpect(jsonPath("$[1].amount", is(5500)))
+                .andExpect(jsonPath("$[1].amount", is(5000)))
                 .andExpect(jsonPath("$[2].label", is("Insurance policy")))
                 .andExpect(jsonPath("$[2].id", is(insurance.getId())))
-                .andExpect(jsonPath("$[2].amount", is(500)))
+                .andExpect(jsonPath("$[2].amount", is(0)))
                 .andExpect(jsonPath("$[3].label", is("Food expenses")))
                 .andExpect(jsonPath("$[3].id", is(food.getId())))
-                .andExpect(jsonPath("$[3].amount", is(1500)));
+                .andExpect(jsonPath("$[3].amount", is(0)));
     }
 
     @Test
@@ -74,7 +74,11 @@ public class AcceptanceTests {
 
         mockMvc
                 .perform(get("/api/budget/2/registry"))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.error", is("RegistryNotFoundException")))
+                .andExpect(jsonPath("$.message", is("No registries found for userId: '2'")))
+                .andExpect(jsonPath("$.path", is("/api/budget/2/registry")))
+                .andExpect(jsonPath("$.status", is(404)));
     }
 
     @Test
@@ -161,16 +165,15 @@ public class AcceptanceTests {
 
     @Test
     void shouldReturnBadRequest_WhenSourceHasNotEnoughFunds_OnTransfer() throws Exception {
-        Registry source = new Registry("Source", "1", 1000);
-        Registry target = new Registry("Target", "1", 1000);
-        Registry saved = registryRepository.save(source);
+        Registry saved = registryRepository.save(new Registry("Source", "1", 1000));
+        Registry target = registryRepository.save(new Registry("Target", "1", 1000));
 
         mockMvc
                 .perform(post("/api/budget/1/registry/" + saved.getId() + "/transfer")
                         .content("{\"amount\":2500, \"targetRegistryId\" : \"" + target.getId() + "\"}")
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.error", is("RegistryNotFoundException")))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error", is("InvalidRequestException")))
                 .andExpect(jsonPath("$.message", is("Not enough funds for the transfer. Source amount: 1000, requested transfer: 2500")))
                 .andExpect(jsonPath("$.path", is("/api/budget/1/registry/" + saved.getId() + "/transfer")))
                 .andExpect(jsonPath("$.status", is(400)));
@@ -186,9 +189,9 @@ public class AcceptanceTests {
                 .perform(post("/api/budget/1/registry/" + saved.getId() + "/transfer")
                         .content("{\"amount\":-2500, \"targetRegistryId\" : \"" + target.getId() + "\"}")
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.error", is("RegistryNotFoundException")))
-                .andExpect(jsonPath("$.message", is("Not enough funds for the transfer. Source amount: 1000, requested transfer: 2500")))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error", is("MethodArgumentNotValidException")))
+                .andExpect(jsonPath("$.message", is("Transfer amount must be greater or equal to 0")))
                 .andExpect(jsonPath("$.path", is("/api/budget/1/registry/" + saved.getId() + "/transfer")))
                 .andExpect(jsonPath("$.status", is(400)));
     }
